@@ -36,16 +36,16 @@
     <a href="https://www.zju.edu.cn/" target="_blank" rel="noopener noreferrer" aria-label="Zhejiang University"><img src="assets/logos/zju.svg" alt="Zhejiang University logo" class="logo-zju" width="230" height="80"></a>
   </div>
   <div class="resource-links">
-    <a class="button primary" href="https://arxiv.org/pdf/2606.03949" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"/></svg>Paper</a>
+    <a class="button primary" href="assets/paper-camera-ready.pdf" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"/></svg>Paper</a>
     <a class="button secondary" href="https://github.com/Liuzeyi25/HILRL-A1X" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 6-6 6 6 6m10-12 6 6-6 6M14 4l-4 16"/></svg>Code</a>
     <span class="button secondary video-coming-soon" aria-label="Video coming soon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="5" fill="#ff0033" stroke="none"/><path d="m10 8 6 4-6 4z" fill="#fff" stroke="none"/></svg><span>Video</span><small>Coming soon</small></span>
   </div>
 </header>
 <section class="wrap summary-metrics" aria-label="Key results">
   <div class="metrics">
-    <div><p class="metric-value">82.5<span>%</span></p><h3>Average success rate</h3><p>from 58.0% with HIL-SERL</p></div>
-    <div><p class="metric-value">32.3<span>%</span></p><h3>Human intervention rate</h3><p>down from 47.1%</p></div>
-    <div><p class="metric-value">1.3<span>×</span></p><h3>Faster training</h3><p>no inference-time overhead</p></div>
+    <div><p class="metric-value">80.5<span>%</span></p><h3>Average success rate</h3><p>from 53.3% with HIL-SERL</p></div>
+    <div><p class="metric-value">33.7<span>%</span></p><h3>Human intervention rate</h3><p>down from 49.8% with HIL-SERL</p></div>
+    <div><p class="metric-value">1.3<span>×</span></p><h3>Faster training</h3><p>67.5 vs. 86.9 minutes on average</p></div>
   </div>
 </section>
 <section id="overview" class="section">
@@ -53,19 +53,19 @@
     <div class="section-head"><h2>Abstract</h2></div>
     <div class="prose"><p>Human-in-the-loop reinforcement learning (HIL-RL) improves sample efficiency in real-robot manipulation through online human intervention. However, successful trajectories may include suboptimal actions that deviate from the desired task-execution path and force human intervention. Existing HIL-RL methods typically apply the consistent credit assignment principle to all transitions, uniformly propagating discounted terminal rewards through suboptimal segments, ignoring the actual contribution of each transition to task success. This overestimates Q-values for critic learning and indirectly misguides actor updates toward suboptimal behavior patterns.</p>
     <p>To this end, we propose <strong>PACT</strong>, a <strong>Preference-calibrated Actor-Critic Training</strong> framework that leverages the implicit preference signals induced by intervention to perform credit reassignment on identified suboptimal segments while directly guiding policy training for unbiased critic-actor learning. Specifically, we first design a progress model that learns from human demonstration and identifies suboptimal segments for credit correction. Then, from the human action and resampled policy action at the intervention state, we build preference pairs to define a counterfactual advantage that penalizes Bellman targets of the identified suboptimal segment, enabling directional credit calibration. Moreover, we directly align the policy with human corrective actions in the bounded mean space, providing an additional signal beyond critic-guided updates.</p>
-    <p>Across five real-robot manipulation tasks, PACT increases average success from <strong>58.0% to 82.5%</strong> and achieves <strong>1.3× faster convergence</strong>, improving both RL sample efficiency and performance.</p></div>
+    <p>Across six real-robot manipulation tasks, PACT increases average success from <strong>53.3% to 80.5%</strong>, reduces the human intervention rate from <strong>49.8% to 33.7%</strong>, and achieves <strong>1.3× faster training</strong> than HIL-SERL.</p></div>
   </div>
 </section>
 <section class="section section-tint" aria-labelledby="insight-title">
   <div class="wrap">
     <div class="section-head"><h2 id="insight-title">A successful trajectory can still contain mistakes.</h2><p>When a human rescues a rollout, the final reward can give undeserved credit to the robot actions that made the rescue necessary.</p></div>
-    <figure class="paper-figure"><a class="zoom figure-link" href="assets/credit-assignment.png" data-caption="Figure 1 · PACT localizes suboptimal segments and corrects inflated Q-values in intervention-containing trajectories." aria-label="Enlarge credit assignment diagram"><img src="assets/credit-assignment.png" width="1492" height="440" loading="lazy" alt="Normal exploration, suboptimal actions and human recovery in a successful trajectory, with PACT correcting inflated Q-values"></a><figcaption><strong>Human interventions provide more than recovery.</strong> They reveal a preference for corrective actions over the policy actions at the same state. PACT uses this signal to calibrate both the critic and the actor.</figcaption></figure>
+    <figure class="paper-figure"><a class="zoom figure-link" href="assets/credit-assignment.png" data-caption="Figure 1 · PACT localizes suboptimal segments and corrects inflated Q-values in intervention trajectories. The six-task averages are shown at right." aria-label="Enlarge credit assignment diagram"><img src="assets/credit-assignment.png" width="1654" height="483" loading="lazy" alt="Normal exploration, suboptimal actions, and human recovery, alongside six-task success and intervention-rate improvements"></a><figcaption><strong>Human interventions provide more than recovery.</strong> They reveal a preference for corrective actions over the policy actions at the same state. PACT uses this signal to calibrate both the critic and the actor.</figcaption></figure>
   </div>
 </section>
 <section id="method" class="section">
   <div class="wrap">
     <div class="section-head"><h2>Preference-calibrated actor-critic training</h2><p>Locate the mistakes, reassign credit, and learn from the correction.</p></div>
-    <figure class="paper-figure"><a class="zoom figure-link" href="assets/method.png" data-caption="Figure 2 · The PACT pipeline: suboptimal segment localization, preference calibration, and real-world online reinforcement learning." aria-label="Enlarge PACT method overview"><img src="assets/method.png" width="1600" height="532" loading="lazy" alt="PACT method overview showing a progress model, preference-aware critic correction, auxiliary actor optimization, and online robot learning"></a><figcaption>PACT integrates preference calibration into an online HIL-RL training pipeline. Preference pairs come directly from human interventions, without additional preference annotation.</figcaption></figure>
+    <figure class="paper-figure"><a class="zoom figure-link" href="assets/method.png" data-caption="Figure 2 · PACT turns intervention-containing trajectories into preference-calibrated critic and actor updates in online HIL-RL." aria-label="Enlarge PACT method overview"><img src="assets/method.png" width="1654" height="579" loading="lazy" alt="PACT method overview showing progress-based segment localization, preference-aware critic correction, auxiliary actor optimization, and online robot learning"></a><figcaption>PACT integrates preference calibration into an online HIL-RL training pipeline. Preference pairs come directly from human interventions, without additional preference annotation.</figcaption></figure>
     <div class="method-steps">
       <article><span class="step-num">1. Localize</span><h3>Find suboptimal segments</h3><p>A lightweight progress model learns from demonstrations. Regressions in estimated task progress locate problematic segments before human intervention.</p></article>
       <article><span class="step-num">2. Calibrate</span><h3>Correct the critic’s credit</h3><p>Human and resampled policy actions form preference pairs. A counterfactual advantage penalizes Bellman targets within the identified segments.</p></article>
@@ -75,15 +75,29 @@
 </section>
 <section id="results" class="section section-tint">
   <div class="wrap">
-    <div class="section-head"><h2>Higher success across all five tasks.</h2><p>Evaluated on a Galaxea A1X 6-DoF arm, with 20 demonstration trajectories per task and HIL-SERL as the primary baseline.</p></div>
-    <div class="results-table-wrap" role="region" aria-label="Success rate results; scroll horizontally on small screens" tabindex="0">
-      <table class="results-table"><caption class="sr-only">Final task success rate in percent, from Table 1 of the paper. Higher is better.</caption><thead><tr><th scope="col">Success rate (%)</th><th scope="col">Press</th><th scope="col">Insertion</th><th scope="col">Pick</th><th scope="col">Pick &amp; Place</th><th scope="col">Assembly</th><th scope="col" class="average">Average</th></tr></thead><tbody>
-      <tr><th scope="row">HIL-SERL</th><td>85.0</td><td>73.0</td><td>67.0</td><td>55.0</td><td>10.0</td><td class="average">58.0</td></tr>
-      <tr class="ours"><th scope="row"><strong>PACT (ours)</strong></th><td>95.0</td><td>90.0</td><td>95.0</td><td>70.0</td><td>62.5</td><td class="average">82.5</td></tr>
-      </tbody></table>
+    <div class="section-head"><h2>Higher success across six real-world tasks.</h2><p>Evaluated on a Galaxea A1X 6-DoF arm with 20 demonstrations per task, against HIL-SERL and RLIF.</p></div>
+    <p class="results-scroll-hint">Scroll horizontally to view Folding, Assembly, and the averages →</p>
+    <div class="results-table-wrap" role="region" aria-label="Real-world results across six tasks; scroll horizontally on small screens" tabindex="0">
+      <table class="results-table"><caption class="sr-only">Table 1 of the camera-ready paper: success rate, intervention rate, training time, and actor steps across six real-world tasks.</caption>
+        <thead><tr><th scope="col">Metric</th><th scope="col">Method</th><th scope="col">Press</th><th scope="col">Insertion</th><th scope="col">Pick</th><th scope="col">Pick &amp; Place</th><th scope="col">Folding</th><th scope="col">Assembly</th><th scope="col" class="average">Average</th></tr></thead>
+        <tbody>
+          <tr class="metric-start"><th scope="rowgroup" rowspan="3" class="metric-label">Success rate (%) ↑</th><th scope="row">RLIF</th><td>75</td><td>60</td><td>50</td><td>25</td><td>10</td><td>0</td><td class="average">36.7</td></tr>
+          <tr><th scope="row">HIL-SERL</th><td>85</td><td>73</td><td>67</td><td>55</td><td>30</td><td>10</td><td class="average">53.3</td></tr>
+          <tr class="ours"><th scope="row">PACT (ours)</th><td>95</td><td>90</td><td>95</td><td>70</td><td>70</td><td>63</td><td class="average">80.5</td></tr>
+          <tr class="metric-start"><th scope="rowgroup" rowspan="3" class="metric-label">Intervention rate (%) ↓</th><th scope="row">RLIF</th><td>37.4</td><td>36.7</td><td>38.9</td><td>63.8</td><td>52.4</td><td>59.6</td><td class="average">48.1</td></tr>
+          <tr><th scope="row">HIL-SERL</th><td>43.6</td><td>45.3</td><td>35.8</td><td>54.9</td><td>63.1</td><td>56.0</td><td class="average">49.8</td></tr>
+          <tr class="ours"><th scope="row">PACT (ours)</th><td>19.1</td><td>32.5</td><td>26.1</td><td>36.6</td><td>40.9</td><td>47.2</td><td class="average">33.7</td></tr>
+          <tr class="metric-start"><th scope="rowgroup" rowspan="3" class="metric-label">Training time (min) ↓</th><th scope="row">RLIF</th><td>37.7</td><td>51.4</td><td>74.8</td><td>108.4</td><td>106.2</td><td>122.1</td><td class="average">83.4</td></tr>
+          <tr><th scope="row">HIL-SERL</th><td>23.2</td><td>51.8</td><td>75.0</td><td>110.8</td><td>118.2</td><td>142.6</td><td class="average">86.9</td></tr>
+          <tr class="ours"><th scope="row">PACT (ours)</th><td>21.4</td><td>30.3</td><td>46.6</td><td>94.5</td><td>90.1</td><td>122.1</td><td class="average">67.5</td></tr>
+          <tr class="metric-start"><th scope="rowgroup" rowspan="3" class="metric-label">Actor steps (K) ↓</th><th scope="row">RLIF</th><td>13.1</td><td>18.6</td><td>23.9</td><td>35.8</td><td>33.5</td><td>40.4</td><td class="average">27.6</td></tr>
+          <tr><th scope="row">HIL-SERL</th><td>7.7</td><td>17.6</td><td>22.1</td><td>38.0</td><td>38.3</td><td>44.1</td><td class="average">28.0</td></tr>
+          <tr class="ours"><th scope="row">PACT (ours)</th><td>7.3</td><td>11.7</td><td>15.7</td><td>31.3</td><td>27.9</td><td>39.9</td><td class="average">22.3</td></tr>
+        </tbody>
+      </table>
     </div>
-    <p class="table-note">Table 1 · Average success improves by 24.5 percentage points. Average training time decreases from 80.7 to 63.0 minutes.</p>
-    <figure class="paper-figure results-secondary"><a class="zoom figure-link" href="assets/learning-curves.png" data-caption="Figure 3 · Training dynamics across Press, Insertion, Pick, Pick & Place, and Assembly. PACT is shown in green; HIL-SERL in blue." aria-label="Enlarge real-robot learning curves"><img src="assets/learning-curves.png" width="1500" height="596" loading="lazy" alt="Learning curves comparing PACT and HIL-SERL across all five tasks: intervention rate above and success rate below"></a><figcaption><strong>Less intervention as learning progresses.</strong> PACT reduces human intervention more rapidly while achieving faster growth in success rate across the five tasks.</figcaption></figure>
+    <p class="table-note">Table 1 · Compared with HIL-SERL, average success rises by 27.2 percentage points, intervention falls by 16.1 points, and training time falls from 86.9 to 67.5 minutes.</p>
+    <figure class="paper-figure results-secondary"><a class="zoom figure-link" href="assets/learning-curves.png" data-caption="Figure 3 · Training dynamics across Press, Insertion, Pick, Pick & Place, Folding, and Assembly. PACT is green; HIL-SERL is blue." aria-label="Enlarge real-robot learning curves"><img src="assets/learning-curves.png" width="1654" height="587" loading="lazy" alt="Intervention-rate and success-rate curves for PACT and HIL-SERL across six tasks, including Folding"></a><figcaption><strong>Less intervention as learning progresses.</strong> PACT reduces human intervention more rapidly while achieving faster growth in success rate across the six tasks.</figcaption></figure>
   </div>
 </section>
 <section class="section" aria-labelledby="analysis-title">
@@ -107,11 +121,11 @@
         <figcaption>Value estimates and robot observations evolve together through a suboptimal segment and a human intervention. Red: PACT; blue: HIL-SERL; black: Monte Carlo return.</figcaption>
       </figure>
     </div>
-    <figure class="paper-figure"><a class="zoom figure-link" href="assets/progress-analysis.png" data-caption="Figure 4 · Progress-based suboptimal segment localization. Red portions of the trajectories mark the detected suboptimal segments." aria-label="Enlarge progress-model analysis"><img src="assets/progress-analysis.png" width="1500" height="648" loading="lazy" alt="Three robot trajectories and associated image sequences showing hesitation during insertion, a wrong grasp during picking, and a path offset during pick and place"></a><figcaption>The red trajectory segments correspond to identified suboptimal behavior. This provides targeted segments for credit correction inside otherwise successful rollouts.</figcaption></figure>
+    <figure class="paper-figure"><a class="zoom figure-link" href="assets/progress-analysis.png" data-caption="Figure 4 · Progress-based suboptimal segment localization. Red portions of the trajectories mark the detected suboptimal segments." aria-label="Enlarge progress-model analysis"><img src="assets/progress-analysis.png" width="1654" height="708" loading="lazy" alt="Three robot trajectories and associated image sequences showing hesitation during insertion, a wrong grasp during picking, and a path offset during pick and place"></a><figcaption>The red trajectory segments correspond to identified suboptimal behavior. This provides targeted segments for credit correction inside otherwise successful rollouts.</figcaption></figure>
   </div>
 </section>
 <section class="section showcase wrap showcase-end" aria-labelledby="showcase-title">
-  <h2 id="showcase-title">Learning from human corrections across five real-world tasks</h2>
+  <h2 id="showcase-title">Selected real-world robot demonstrations</h2>
 
   <figure class="showcase-film">
     <video id="showcase-video" controls muted playsinline preload="metadata" poster="assets/videos/robot-showcase.jpg" width="1280" height="720" aria-label="Five real-world robot manipulation tasks, selected demonstration video">
