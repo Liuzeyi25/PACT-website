@@ -124,6 +124,16 @@
     <figure class="paper-figure"><a class="zoom figure-link" href="assets/progress-analysis.png" data-caption="Figure 4 · Progress-based suboptimal segment localization. Red portions of the trajectories mark the detected suboptimal segments." aria-label="Enlarge progress-model analysis"><img src="assets/progress-analysis.png" width="1654" height="708" loading="lazy" alt="Three robot trajectories and associated image sequences showing hesitation during insertion, a wrong grasp during picking, and a path offset during pick and place"></a><figcaption>The red trajectory segments correspond to identified suboptimal behavior. This provides targeted segments for credit correction inside otherwise successful rollouts.</figcaption></figure>
   </div>
 </section>
+<section id="qvalue-analysis" class="section qvalue-analysis" aria-labelledby="qvalue-title">
+  <div class="wrap">
+    <div class="section-head"><h2 id="qvalue-title">Suppressing Q-value overestimation during training</h2></div>
+    <figure class="paper-figure qvalue-training-figure">
+      <a class="zoom figure-link" href="assets/qvalue-training.png" data-caption="Target Q-values during training (a) and predicted Q-values along a trajectory (b). Green: HIL-SERL; red: PACT; black: Monte Carlo return." aria-label="Enlarge Q-value overestimation analysis"><img src="assets/qvalue-training.png" width="794" height="304" loading="lazy" alt="HIL-SERL target Q-values rise during training while PACT reaches a stable plateau; in the trajectory correction segment, HIL-SERL overestimates the Monte Carlo return and PACT lowers its estimates."></a>
+      <div class="qvalue-legend" aria-label="Figure legend"><span><i class="legend-hilserl" aria-hidden="true"></i>HIL-SERL</span><span><i class="legend-pact" aria-hidden="true"></i>PACT</span><span><i class="legend-mc" aria-hidden="true"></i>MC return</span></div>
+      <figcaption>PACT stabilizes target Q-values during training and suppresses overestimation in the correction segment, whereas HIL-SERL exhibits pronounced value inflation.</figcaption>
+    </figure>
+  </div>
+</section>
 <section id="citation" class="section section-tint">
   <div class="wrap narrow">
     <div class="citation-head"><h2>BibTeX</h2><button class="copy-button" id="copy-citation" type="button">Copy BibTeX</button></div>
